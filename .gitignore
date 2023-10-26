@@ -1,0 +1,49 @@
+### macOS ###
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+### Xcode ###
+
+## User settings
+xcuserdata/
+
+# Swift Package Manager
+Packages/
+Package.pins
+.build/
+
+### Carthage ###
+
+Carthage/
+
+### Fastlane ###
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+Preview.html
+.idea/misc.xml
+.idea/modules.xml
+.idea/nunav-ios-new.iml
+.idea/vcs.xml
+*.xcframework
+
+### Kotlin Build ###
+kotlin-routing-sdk
+.gradle
+
+.idea/
+build
+output
+local.properties
+**/.mockingbird
+gradlew.bat
+vendor
+.swiftpm
