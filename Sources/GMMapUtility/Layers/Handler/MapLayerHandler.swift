@@ -4,6 +4,8 @@ import Foundation
 ///
 /// - note: A `MapLayerHandler` may be self updating to model changes or receive udpates from outside. Often these two purposes are split up.
 public protocol MapLayerHandler {
+    var mapTheme: MapTheme { get }
+
     /// One time setup for all needed resources for handling the layer, e.g. images, sources.
     func setup()
 

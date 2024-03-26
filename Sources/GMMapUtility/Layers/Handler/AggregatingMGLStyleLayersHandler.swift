@@ -6,10 +6,11 @@ open class AggregatingMGLStyleLayersHandler: MGLStyleLayersHandler {
 
     public init(
         mapLayerManager: MapboxMapLayerManager?,
+        mapTheme: MapTheme,
         layerHandlers: [MGLStyleLayersHandler]
     ) {
         self.layerHandlers = layerHandlers
-        super.init(mapLayerManager: mapLayerManager)
+        super.init(mapLayerManager: mapLayerManager, mapTheme: mapTheme)
     }
 
     override open func setup() {

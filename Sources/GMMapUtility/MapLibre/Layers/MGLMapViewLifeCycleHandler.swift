@@ -18,6 +18,15 @@ public final class MGLMapViewLifeCycleHandler: NSObject {
     public weak var mapView: MGLMapView?
 
     private var currentLayersController: MGLStyleLayersHandler?
+    private var layerUpdatesPaused = true {
+        didSet {
+            if layerUpdatesPaused {
+                currentLayersController?.stopLayerUpdates()
+            } else {
+                currentLayersController?.startLayerUpdates()
+            }
+        }
+    }
 
     private lazy var mapTapGestureRecognizer: UITapGestureRecognizer = {
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(didTapMapView(sender:)))
@@ -53,16 +62,16 @@ public final class MGLMapViewLifeCycleHandler: NSObject {
 extension MGLMapViewLifeCycleHandler {
     /// This methods pauses all layer updates.
     ///
-    /// - note: This may be called if the map is not visible.
+    /// - note: This shoud be called if the map is not visible.
     public func pauseLayerUpdates() {
-        currentLayersController?.startLayerUpdates()
+        layerUpdatesPaused = true
     }
 
     /// This methods resumes all layer updates.
     ///
-    /// - note: This may be called if the map becomes visible.
+    /// - note: This should be called if the map becomes visible.
     public func resumeLayerUpdates() {
-        currentLayersController?.stopLayerUpdates()
+        layerUpdatesPaused = false
     }
 }
 
@@ -78,7 +87,10 @@ extension MGLMapViewLifeCycleHandler {
         )
 
         currentLayersController?.setup()
-        currentLayersController?.startLayerUpdates()
+
+        if !layerUpdatesPaused {
+            currentLayersController?.startLayerUpdates()
+        }
     }
 
     private func localize(style: MGLStyle) {

@@ -2,12 +2,15 @@ import Foundation
 import Mapbox
 
 open class MGLStyleLayersHandler: MapLayerHandler {
+    public private(set) var mapTheme: MapTheme
+
     public private(set) var mapLayerManager: MapboxMapLayerManager?
 
     open var interactionLayerIdentifiers: Set<String> { Set<String>([]) }
 
-    public init(mapLayerManager: MapboxMapLayerManager?) {
+    public init(mapLayerManager: MapboxMapLayerManager?, mapTheme: MapTheme) {
         self.mapLayerManager = mapLayerManager
+        self.mapTheme = mapTheme
     }
 
     // MARK: - User Interaction
