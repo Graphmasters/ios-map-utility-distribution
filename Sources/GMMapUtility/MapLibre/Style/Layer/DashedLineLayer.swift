@@ -11,6 +11,7 @@ open class DashedLineLayer: MGLLineStyleLayer {
         applyDefaultStyle(to: self, lineColor: lineColor)
     }
 
+    // swiftlint:disable no_magic_numbers
     private func applyDefaultStyle(to layer: MGLLineStyleLayer, lineColor: UIColor) {
         layer.minimumZoomLevel = Constants.defaultZoomLevel
         layer.lineCap = NSExpression(forConstantValue: "round")
@@ -27,4 +28,5 @@ open class DashedLineLayer: MGLLineStyleLayer {
             ])
         )
     }
+    // swiftlint:enable no_magic_numbers
 }

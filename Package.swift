@@ -2,6 +2,7 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
+import Foundation
 
 let package = Package(
     name: "ios-map-utility",
@@ -21,6 +22,9 @@ let package = Package(
             name: "GMMapUtility",
             dependencies: [
                 .product(name: "Mapbox", package: "maplibre-gl-native-distribution")
+            ],
+            resources: [
+                .process("Resources/PrivacyInfo.xcprivacy")
             ]
         )
     ]

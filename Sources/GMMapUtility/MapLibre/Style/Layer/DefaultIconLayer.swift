@@ -17,6 +17,7 @@ open class DefaultIconLayer: MGLSymbolStyleLayer {
         applyDefaultStyle(to: self)
     }
 
+    // swiftlint:disable no_magic_numbers
     private func applyDefaultStyle(to layer: MGLSymbolStyleLayer) {
         layer.text = NSExpression(forKeyPath: Self.textKey)
         layer.iconImageName = NSExpression(forKeyPath: Self.iconNameKey)
@@ -42,4 +43,5 @@ open class DefaultIconLayer: MGLSymbolStyleLayer {
             ])
         )
     }
+    // swiftlint:enable no_magic_numbers
 }

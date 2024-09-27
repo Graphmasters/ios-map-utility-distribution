@@ -10,9 +10,12 @@ public protocol MapViewCameraController {
 
     /// Moves the map camera to the given location with the given duration
     func move(
-        to location: CLLocationCoordinate2D, heading: Double?,
+        to location: CLLocationCoordinate2D,
+        heading: Double?,
         duration: TimeInterval,
-        zoom: Double?, pitch: CGFloat?, edgeInsets: UIEdgeInsets,
+        zoom: Double?,
+        pitch: CGFloat?,
+        edgeInsets: UIEdgeInsets,
         completion: (() -> Void)?
     )
 
@@ -66,8 +69,21 @@ extension MapViewCameraController {
         move(to: location, heading: heading, duration: duration, completion: nil)
     }
 
-    public func move(to location: CLLocationCoordinate2D, heading: Double?, duration: TimeInterval, completion: (() -> Void)?) {
-        move(to: location, heading: heading, duration: duration, zoom: nil, pitch: nil, edgeInsets: .zero, completion: completion)
+    public func move(
+        to location: CLLocationCoordinate2D,
+        heading: Double?,
+        duration: TimeInterval,
+        completion: (() -> Void)?
+    ) {
+        move(
+            to: location,
+            heading: heading,
+            duration: duration,
+            zoom: nil,
+            pitch: nil,
+            edgeInsets: .zero,
+            completion: completion
+        )
     }
 
     public func moveCamera(

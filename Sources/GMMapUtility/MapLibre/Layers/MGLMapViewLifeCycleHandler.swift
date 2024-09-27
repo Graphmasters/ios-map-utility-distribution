@@ -2,13 +2,6 @@ import Foundation
 import Mapbox
 import UIKit
 
-public protocol MapLayerHandlerBuilder {
-    func mapLayerHandler(
-        for mapView: MGLMapView,
-        withMapTheme mapTheme: MapTheme
-    ) -> MGLStyleLayersHandler
-}
-
 public final class MGLMapViewLifeCycleHandler: NSObject {
     private var mapThemeRepository: MapThemeRepository
     private let mapStyleUrlProvider: MGLMapStyleUrlProvider
@@ -97,7 +90,8 @@ extension MGLMapViewLifeCycleHandler {
         mapStyleLocalizer.localize(style, locale: Locale.current)
     }
 
-    @objc private func didTapMapView(sender: UITapGestureRecognizer) {
+    @objc
+    private func didTapMapView(sender: UITapGestureRecognizer) {
         guard let mapView = mapView else {
             return
         }
@@ -126,7 +120,10 @@ extension MGLMapViewLifeCycleHandler: MGLMapViewDelegate {
 }
 
 extension MGLMapViewLifeCycleHandler: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith _: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(
+        _: UIGestureRecognizer,
+        shouldRecognizeSimultaneouslyWith _: UIGestureRecognizer
+    ) -> Bool {
         return true
     }
 }

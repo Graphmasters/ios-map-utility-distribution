@@ -1,6 +1,16 @@
 import Mapbox
 
 public class MGLMapViewCameraController: MapViewCameraController {
+    private enum Constants {
+        public static let maxDeltaLatitudeEquality = 0.0001
+        public static let incrementWorkaroundZoomStop = 0.01
+        public static let cameraAltitudeIncrementZoomNorth: Double = 1_000
+        public static let fallbackCameraViewDistance: Double = 500
+        public static let cameraAltitudeFactor: Double = 0.75
+        public static let mapViewCameraAltitudeFactor: Double = 0.25
+        public static let defaultCameraMovementDuration: Double = 0.5
+        public static let mapViewFlyDuration: Double = 1
+    }
     // MARK: - Attributes
 
     private weak var mapView: MGLMapView?
@@ -28,7 +38,7 @@ public class MGLMapViewCameraController: MapViewCameraController {
             return false
         }
         return abs(mapView.camera.heading) == 0
-            && abs(location.coordinate.latitude - mapView.centerCoordinate.latitude) < 0.0001
+        && abs(location.coordinate.latitude - mapView.centerCoordinate.latitude) < Constants.maxDeltaLatitudeEquality
     }
 
     public func set(to location: CLLocationCoordinate2D, heading: Double?, completion: (() -> Void)?) {
@@ -59,7 +69,15 @@ public class MGLMapViewCameraController: MapViewCameraController {
         zoomLevel: Double?,
         completion: (() -> Void)?
     ) {
-        mapView?.fly(to: camera(from: location, heading: heading, zoom: zoomLevel), withDuration: 1, completionHandler: completion)
+        mapView?.fly(
+            to: camera(
+                from: location,
+                heading: heading,
+                zoom: zoomLevel
+            ),
+            withDuration: Constants.mapViewFlyDuration,
+            completionHandler: completion
+        )
     }
 
     public func showNorth(animated _: Bool, completion: (() -> Void)?) {
@@ -70,7 +88,7 @@ public class MGLMapViewCameraController: MapViewCameraController {
         let camera = mapView.camera
         camera.heading = .zero
         camera.pitch = .zero
-        camera.altitude += 1000
+        camera.altitude += Constants.cameraAltitudeIncrementZoomNorth
         set(
             camera: camera,
             animationTimingFunction: CAMediaTimingFunction(name: .easeOut),
@@ -83,11 +101,16 @@ public class MGLMapViewCameraController: MapViewCameraController {
         guard let bbox = locations.filter({ CLLocationCoordinate2DIsValid($0) }).boundingBox else {
             return
         }
-        showBoundingBox(northEast: bbox.northEast, southWest: bbox.southWest, animated: animated, completion: completion)
+        showBoundingBox(
+            northEast: bbox.northEast,
+            southWest: bbox.southWest,
+            animated: animated,
+            completion: completion
+        )
     }
 
     public func cancelCameraUpdates() {
-        mapView?.zoomLevel += 0.01
+        mapView?.zoomLevel += Constants.incrementWorkaroundZoomStop
     }
 
     public func zoomIn(animated _: Bool, completion: (() -> Void)?) {
@@ -194,7 +217,7 @@ public class MGLMapViewCameraController: MapViewCameraController {
                 zoom: zoom ?? defaultZoom,
                 pitch: pitch ?? defaultPitch,
                 latitude: location.latitude
-            ) ?? 500,
+            ) ?? Constants.fallbackCameraViewDistance,
             pitch: pitch ?? defaultPitch,
             heading: heading ?? .zero
         )
@@ -228,13 +251,16 @@ public class MGLMapViewCameraController: MapViewCameraController {
             longitude: camera.centerCoordinate.longitude
         ))
 
-        let altitude = (0.75 * camera.altitude + 0.25 * mapView.camera.altitude)
+        let altitude = (
+            Constants.cameraAltitudeFactor * camera.altitude
+            + Constants.mapViewCameraAltitudeFactor * mapView.camera.altitude
+        )
 
-        guard distance < altitude * 2 else {
+        guard distance < altitude * 2 else { // swiftlint:disable:this no_magic_numbers
             return .zero
         }
 
-        return defaultDuration ?? max(0.5, distance / altitude)
+        return defaultDuration ?? max(Constants.defaultCameraMovementDuration, distance / altitude)
     }
 
     private func showBoundingBox(
@@ -258,7 +284,9 @@ public class MGLMapViewCameraController: MapViewCameraController {
         )
         let baseCamera = MGLMapCamera(
             lookingAtCenter: [northEast, southWest].geographicMidpoint(),
-            acrossDistance: .zero, pitch: .zero, heading: .zero
+            acrossDistance: .zero,
+            pitch: .zero,
+            heading: .zero
         )
         let camera = mapView.camera(
             baseCamera,

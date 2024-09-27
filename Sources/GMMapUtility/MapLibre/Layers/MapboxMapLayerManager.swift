@@ -1,20 +1,6 @@
 import Foundation
 import Mapbox
 
-enum MapboxMapLayerManagerError: LocalizedError {
-    case layerAlreadyAdded(String)
-    case sourceUnavailable(String)
-
-    // MARK: Internal
-
-    var errorDescription: String? {
-        switch self {
-        case let .layerAlreadyAdded(layerId): return "Already added layer with id `\(layerId)`."
-        case let .sourceUnavailable(sourceId): return "Source with id `\(sourceId)` is not added to the style."
-        }
-    }
-}
-
 public class MapboxMapLayerManager {
     public weak var mapView: MGLMapView?
 
@@ -143,7 +129,8 @@ extension MapboxMapLayerManager {
             throw MapboxMapLayerManagerError.layerAlreadyAdded(layerId)
         }
         guard let layer2 = mapView?.style?.layer(withIdentifier: layerId) else {
-            return try addOnTop(layer: layer)
+            try addOnTop(layer: layer)
+            return
         }
         mapView?.style?.insertLayer(layer, below: layer2)
     }
@@ -153,7 +140,8 @@ extension MapboxMapLayerManager {
             throw MapboxMapLayerManagerError.layerAlreadyAdded(layerId)
         }
         guard let layer2 = mapView?.style?.layer(withIdentifier: layerId) else {
-            return try addOnTop(layer: layer)
+            try addOnTop(layer: layer)
+            return
         }
         mapView?.style?.insertLayer(layer, above: layer2)
     }
@@ -163,7 +151,8 @@ extension MapboxMapLayerManager {
             return
         }
         guard (0 ... (mapView?.style?.layers.count ?? 0)).contains(Int(index)) else {
-            return try addOnTop(layer: layer)
+            try addOnTop(layer: layer)
+            return
         }
         mapView?.style?.insertLayer(layer, at: index)
     }
