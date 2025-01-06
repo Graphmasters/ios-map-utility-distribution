@@ -31,7 +31,7 @@ open class AggregatingMGLStyleLayersHandler: MGLStyleLayersHandler {
 
     // MARK: Overridden Functions
 
-    override public func updateVisibility(_ visible: Bool) {
+    override public func updateVisibility(isVisible visible: Bool) {
         layerHandlers.forEach { $0.updateVisibility(visible) }
     }
 

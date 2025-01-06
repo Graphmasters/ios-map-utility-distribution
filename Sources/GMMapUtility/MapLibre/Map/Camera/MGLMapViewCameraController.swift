@@ -31,7 +31,9 @@ public class MGLMapViewCameraController: MapViewCameraController {
             return false
         }
         return abs(mapView.camera.heading) == 0
-            && abs(location.coordinate.latitude - mapView.centerCoordinate.latitude) < Constants.maxDeltaLatitudeEquality
+            && abs(
+                location.coordinate.latitude - mapView.centerCoordinate.latitude
+            ) < Constants.maxDeltaLatitudeEquality
     }
 
     // MARK: Lifecycle
