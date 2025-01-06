@@ -67,11 +67,21 @@ open class MGLStyleLayersHandler: MapLayerHandler {
         self.isVisible = isVisible
     }
 
+    /// This method should be called from subclasses to update the visibility of the layer if there is any special logic in addition to the default.
+    public func refreshLayerVisibility() {
+        refreshLayerVisibility(isVisible: isVisible)
+    }
+
     /// This method should be called from outside to update the camera tilt of the layer.
     ///
     /// If the handler is currently inactive the value will be stored and applied when the handler is started.
     public func updateTilt(tilt: Float) {
         self.tilt = tilt
+    }
+
+    /// This method should be called from subclasses to update the camera tilt of the layer if there is any special logic in addition to the default.
+    public func refreshLayerTilt() {
+        refreshLayerTilt(tilt: tilt)
     }
 
     // MARK: - User Interaction
