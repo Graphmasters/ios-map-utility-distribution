@@ -1,15 +1,21 @@
 import Mapbox
 
 open class DashedLineLayer: MGLLineStyleLayer {
+    // MARK: Nested Types
+
     private enum Constants {
         static let defaultZoomLevel: Float = 11
     }
+
+    // MARK: Lifecycle
 
     public init(identifier: String, source: MGLSource, lineColor: UIColor) {
         super.init(identifier: identifier, source: source)
 
         applyDefaultStyle(to: self, lineColor: lineColor)
     }
+
+    // MARK: Functions
 
     // swiftlint:disable no_magic_numbers
     private func applyDefaultStyle(to layer: MGLLineStyleLayer, lineColor: UIColor) {

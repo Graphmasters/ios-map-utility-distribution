@@ -2,12 +2,18 @@ import Foundation
 import Mapbox
 
 open class DefaultIconLayer: MGLSymbolStyleLayer {
+    // MARK: Nested Types
+
     private enum Constants {
         static let defaultZoomLevel: Float = 11
     }
 
+    // MARK: Static Properties
+
     @objc public static let iconNameKey: String = #keyPath(iconNameKey)
     @objc public static let textKey: String = #keyPath(textKey)
+
+    // MARK: Lifecycle
 
     public init(identifier: String, source: MGLSource, minimumZoomLevel: Float? = nil) {
         super.init(identifier: identifier, source: source)
@@ -16,6 +22,8 @@ open class DefaultIconLayer: MGLSymbolStyleLayer {
 
         applyDefaultStyle(to: self)
     }
+
+    // MARK: Functions
 
     // swiftlint:disable no_magic_numbers
     private func applyDefaultStyle(to layer: MGLSymbolStyleLayer) {

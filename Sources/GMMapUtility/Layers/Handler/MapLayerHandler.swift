@@ -2,7 +2,7 @@ import Foundation
 
 /// Handles the updates and styling of objects shown on a map which belong together.
 ///
-/// - note: A `MapLayerHandler` may be self updating to model changes or receive udpates from outside. 
+/// - note: A `MapLayerHandler` may be self updating to model changes or receive udpates from outside.
 /// Often these two purposes are split up.
 public protocol MapLayerHandler {
     var mapTheme: MapTheme { get }
@@ -18,22 +18,27 @@ public protocol MapLayerHandler {
 
     /// Handles Layer visibility.
     ///
-    /// - warning: This controls the visibility from outside, but it is not guranteed that the layer is displayed if `isVisible` is set tu `true`.
+    /// - warning: This controls the visibility from outside, but it is not guaranteed that the layer is displayed if `isVisible` is set tu `true`.
     ///  The `MapLayerHandler` may have inner logic whether the layer should be shown.
     func updateVisibility(_ visible: Bool)
 
     /// This method should be called if the camera tilt of the `MapView` changes in order to update the layer.
     func updateTilt(tilt: Float)
 
+    /// This method is called when a feature on the map is tapped.
     func didTapFeature(identifier: Any?, attributes: [String: Any])
 }
 
 extension MapLayerHandler {
+    // MARK: Lifecycle
+
     public func setup() {}
 
     public func startLayerUpdates() {}
 
     public func stopLayerUpdates() {}
+
+    // MARK: Functions
 
     public func updateVisibility(_: Bool) {}
 

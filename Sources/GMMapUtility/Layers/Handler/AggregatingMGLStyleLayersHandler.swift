@@ -2,16 +2,11 @@ import Foundation
 import Mapbox
 
 open class AggregatingMGLStyleLayersHandler: MGLStyleLayersHandler {
+    // MARK: Properties
+
     public var layerHandlers: [MGLStyleLayersHandler]
 
-    public init(
-        mapLayerManager: MapboxMapLayerManager?,
-        mapTheme: MapTheme,
-        layerHandlers: [MGLStyleLayersHandler]
-    ) {
-        self.layerHandlers = layerHandlers
-        super.init(mapLayerManager: mapLayerManager, mapTheme: mapTheme)
-    }
+    // MARK: Lifecycle
 
     override open func setup() {
         layerHandlers.forEach { $0.setup() }
@@ -24,6 +19,17 @@ open class AggregatingMGLStyleLayersHandler: MGLStyleLayersHandler {
     override open func stopLayerUpdates() {
         layerHandlers.forEach { $0.stopLayerUpdates() }
     }
+
+    public init(
+        mapLayerManager: MapboxMapLayerManager?,
+        mapTheme: MapTheme,
+        layerHandlers: [MGLStyleLayersHandler]
+    ) {
+        self.layerHandlers = layerHandlers
+        super.init(mapLayerManager: mapLayerManager, mapTheme: mapTheme)
+    }
+
+    // MARK: Overridden Functions
 
     override public func updateVisibility(_ visible: Bool) {
         layerHandlers.forEach { $0.updateVisibility(visible) }

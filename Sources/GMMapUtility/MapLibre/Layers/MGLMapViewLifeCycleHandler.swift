@@ -3,14 +3,24 @@ import Mapbox
 import UIKit
 
 public final class MGLMapViewLifeCycleHandler: NSObject {
+    // MARK: Properties
+
+    public weak var mapView: MGLMapView?
+
     private var mapThemeRepository: MapThemeRepository
     private let mapStyleUrlProvider: MGLMapStyleUrlProvider
     private let mapStyleLocalizer: MGLMapStyleLocalizer
     private let mapLayerHandlerBuilder: MapLayerHandlerBuilder
 
-    public weak var mapView: MGLMapView?
-
     private var currentLayersController: MGLStyleLayersHandler?
+    private lazy var mapTapGestureRecognizer: UITapGestureRecognizer = {
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(didTapMapView(sender:)))
+        recognizer.delegate = self
+        return recognizer
+    }()
+
+    // MARK: Computed Properties
+
     private var layerUpdatesPaused = true {
         didSet {
             if layerUpdatesPaused {
@@ -21,11 +31,7 @@ public final class MGLMapViewLifeCycleHandler: NSObject {
         }
     }
 
-    private lazy var mapTapGestureRecognizer: UITapGestureRecognizer = {
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(didTapMapView(sender:)))
-        recognizer.delegate = self
-        return recognizer
-    }()
+    // MARK: Lifecycle
 
     public init(
         mapThemeRepository: MapThemeRepository,

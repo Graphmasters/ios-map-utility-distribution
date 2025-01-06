@@ -2,6 +2,14 @@ import Foundation
 import Mapbox
 
 extension MGLPolylineFeature {
+    // MARK: Static Properties
+
+    private static let earthRadiusMeter = 6_371_008.8
+    // swiftlint:disable:next no_magic_numbers
+    private static let metersNorthToLatitude = 180.0 / Double.pi / earthRadiusMeter
+
+    // MARK: Static Functions
+
     public static func geodesicPolyline(
         fromCoordinate src: CLLocationCoordinate2D,
         toCoordinate dst: CLLocationCoordinate2D
@@ -11,9 +19,6 @@ extension MGLPolylineFeature {
         return MGLPolylineFeature(coordinates: coordinates, count: UInt(coordinates.count))
     }
 
-    private static let earthRadiusMeter = 6_371_008.8
-    // swiftlint:disable:next no_magic_numbers
-    private static let metersNorthToLatitude = 180.0 / Double.pi / earthRadiusMeter
     // swiftlint:disable:next no_magic_numbers
     private static func deg2rad(_ number: Double) -> Double { number * .pi / 180 }
 
@@ -23,20 +28,20 @@ extension MGLPolylineFeature {
 
     private static func shiftByCartesian(latitude: Double, longitude: Double, metersNorth: Double, metersEast: Double)
         -> CLLocationCoordinate2D {
-            CLLocationCoordinate2D(
-                latitude: latitude + metersNorth * metersNorthToLatitude,
-                longitude: longitude + metersEast * metersEastToLongitude(latitude: latitude)
-            )
+        CLLocationCoordinate2D(
+            latitude: latitude + metersNorth * metersNorthToLatitude,
+            longitude: longitude + metersEast * metersEastToLongitude(latitude: latitude)
+        )
     }
 
     private static func shiftByCartesian(src: CLLocationCoordinate2D, metersNorth: Double, metersEast: Double)
         -> CLLocationCoordinate2D {
-            shiftByCartesian(
-                latitude: src.latitude,
-                longitude: src.longitude,
-                metersNorth: metersNorth,
-                metersEast: metersEast
-            )
+        shiftByCartesian(
+            latitude: src.latitude,
+            longitude: src.longitude,
+            metersNorth: metersNorth,
+            metersEast: metersEast
+        )
     }
 
     private static func distanceMetersNorth(src: CLLocationCoordinate2D, dst: CLLocationCoordinate2D) -> Double {
@@ -59,7 +64,7 @@ extension MGLPolylineFeature {
         }
 
         let northMid = 0.5 * northEnd + eastEnd * normalisation // swiftlint:disable:this no_magic_numbers
-        let eastMid = 0.5 * eastEnd - northEnd * normalisation  // swiftlint:disable:this no_magic_numbers
+        let eastMid = 0.5 * eastEnd - northEnd * normalisation // swiftlint:disable:this no_magic_numbers
 
         var positions = [CLLocationCoordinate2D]()
 

@@ -1,11 +1,18 @@
 import Foundation
 
 public struct CameraConfiguration {
+    // MARK: Nested Types
+
     public enum Perspective: Int, CaseIterable, Codable {
         case threeDimensional
         case twoDimensional
         case twoDimensionalNorth
     }
+
+    // MARK: Properties
+
+    public let zoomLevelOffset: Double
+    public let perspective: Perspective
 
     // MARK: Lifecycle
 
@@ -13,9 +20,4 @@ public struct CameraConfiguration {
         self.zoomLevelOffset = zoomLevelOffset
         self.perspective = perspective
     }
-
-    // MARK: Public
-
-    public let zoomLevelOffset: Double
-    public let perspective: Perspective
 }

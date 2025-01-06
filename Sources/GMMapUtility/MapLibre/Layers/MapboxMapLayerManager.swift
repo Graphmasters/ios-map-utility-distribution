@@ -2,9 +2,13 @@ import Foundation
 import Mapbox
 
 public class MapboxMapLayerManager {
+    // MARK: Properties
+
     public weak var mapView: MGLMapView?
 
     private var cachedShapes = [String: MGLShape?]()
+
+    // MARK: Lifecycle
 
     public init(mapView: MGLMapView) {
         self.mapView = mapView
@@ -31,13 +35,6 @@ extension MapboxMapLayerManager {
         try? updateSourceFromCache(source: shapeSource)
     }
 
-    private func updateSourceFromCache(source: MGLShapeSource) throws {
-        guard let shape = cachedShapes[source.identifier] else {
-            return
-        }
-        try set(shape: shape, on: source)
-    }
-
     public func remove(source: MGLSource) {
         guard mapView?.style?.sources.contains(source) ?? false else {
             return
@@ -55,6 +52,13 @@ extension MapboxMapLayerManager {
         }
         cachedShapes[source.identifier] = shape
         source.shape = shape
+    }
+
+    private func updateSourceFromCache(source: MGLShapeSource) throws {
+        guard let shape = cachedShapes[source.identifier] else {
+            return
+        }
+        try set(shape: shape, on: source)
     }
 
     private func mapSourceIsAvailable(source: MGLSource) -> Bool {
@@ -83,15 +87,15 @@ extension MapboxMapLayerManager {
 
     public func showLayers(withPrefix prefix: String) {
         let layers = mapView?.style?.layers.filter { $0.identifier.starts(with: prefix) } ?? []
-        layers.forEach {
-            $0.isVisible = true
+        for layer in layers {
+            layer.isVisible = true
         }
     }
 
     public func hideLayers(withPrefix prefix: String) {
         let layers = mapView?.style?.layers.filter { $0.identifier.starts(with: prefix) } ?? []
-        layers.forEach {
-            $0.isVisible = false
+        for layer in layers {
+            layer.isVisible = false
         }
     }
 
@@ -111,10 +115,6 @@ extension MapboxMapLayerManager {
 
     public func mapLayerAvailable(mapLayer: MGLStyleLayer) -> Bool {
         return mapView?.style?.layer(withIdentifier: mapLayer.identifier) == mapLayer
-    }
-
-    private func mapLayerExists(mapLayer: MGLStyleLayer) -> Bool {
-        return mapView?.style?.layer(withIdentifier: mapLayer.identifier) != nil
     }
 
     public func addOnTop(layer: MGLStyleLayer) throws {
@@ -146,6 +146,17 @@ extension MapboxMapLayerManager {
         mapView?.style?.insertLayer(layer, above: layer2)
     }
 
+    public func remove(layer: MGLStyleLayer) {
+        guard mapView?.style?.layers.contains(layer) ?? false else {
+            return
+        }
+        mapView?.style?.removeLayer(layer)
+    }
+
+    private func mapLayerExists(mapLayer: MGLStyleLayer) -> Bool {
+        return mapView?.style?.layer(withIdentifier: mapLayer.identifier) != nil
+    }
+
     private func add(layer: MGLStyleLayer, at index: UInt) throws {
         guard !mapLayerExists(mapLayer: layer) else {
             return
@@ -155,12 +166,5 @@ extension MapboxMapLayerManager {
             return
         }
         mapView?.style?.insertLayer(layer, at: index)
-    }
-
-    public func remove(layer: MGLStyleLayer) {
-        guard mapView?.style?.layers.contains(layer) ?? false else {
-            return
-        }
-        mapView?.style?.removeLayer(layer)
     }
 }

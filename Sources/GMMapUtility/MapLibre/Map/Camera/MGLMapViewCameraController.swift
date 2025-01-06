@@ -1,6 +1,8 @@
 import Mapbox
 
 public class MGLMapViewCameraController: MapViewCameraController {
+    // MARK: Nested Types
+
     private enum Constants {
         public static let maxDeltaLatitudeEquality = 0.0001
         public static let incrementWorkaroundZoomStop = 0.01
@@ -11,6 +13,9 @@ public class MGLMapViewCameraController: MapViewCameraController {
         public static let defaultCameraMovementDuration: Double = 0.5
         public static let mapViewFlyDuration: Double = 1
     }
+
+    // MARK: Properties
+
     // MARK: - Attributes
 
     private weak var mapView: MGLMapView?
@@ -19,7 +24,17 @@ public class MGLMapViewCameraController: MapViewCameraController {
 
     private let defaultZoom: Double
 
-    // MARK: - Life Cycle
+    // MARK: Computed Properties
+
+    public var isCenteredToCurrentLocation: Bool {
+        guard let mapView = mapView, let location = mapView.userLocation else {
+            return false
+        }
+        return abs(mapView.camera.heading) == 0
+            && abs(location.coordinate.latitude - mapView.centerCoordinate.latitude) < Constants.maxDeltaLatitudeEquality
+    }
+
+    // MARK: Lifecycle
 
     public init(
         mapView: MGLMapView,
@@ -31,15 +46,7 @@ public class MGLMapViewCameraController: MapViewCameraController {
         self.defaultZoom = defaultZoom
     }
 
-    // MARK: - Actions
-
-    public var isCenteredToCurrentLocation: Bool {
-        guard let mapView = mapView, let location = mapView.userLocation else {
-            return false
-        }
-        return abs(mapView.camera.heading) == 0
-        && abs(location.coordinate.latitude - mapView.centerCoordinate.latitude) < Constants.maxDeltaLatitudeEquality
-    }
+    // MARK: Functions
 
     public func set(to location: CLLocationCoordinate2D, heading: Double?, completion: (() -> Void)?) {
         move(to: location, heading: heading, duration: .zero, completion: completion)
@@ -253,7 +260,7 @@ public class MGLMapViewCameraController: MapViewCameraController {
 
         let altitude = (
             Constants.cameraAltitudeFactor * camera.altitude
-            + Constants.mapViewCameraAltitudeFactor * mapView.camera.altitude
+                + Constants.mapViewCameraAltitudeFactor * mapView.camera.altitude
         )
 
         guard distance < altitude * 2 else { // swiftlint:disable:this no_magic_numbers

@@ -4,7 +4,7 @@ public enum MapboxMapLayerManagerError: LocalizedError {
     case layerAlreadyAdded(String)
     case sourceUnavailable(String)
 
-    // MARK: Internal
+    // MARK: Computed Properties
 
     public var errorDescription: String? {
         switch self {
