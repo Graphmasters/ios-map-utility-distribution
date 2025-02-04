@@ -5,7 +5,8 @@ import UIKit
 public final class MGLMapViewLifeCycleHandler: NSObject {
     // MARK: Properties
 
-    public weak var mapView: MGLMapView?
+    private weak var mapView: MGLMapView?
+    private weak var delegate: MGLMapViewLifeCycleHandlerDelegate?
 
     private var mapThemeRepository: MapThemeRepository
     private let mapStyleUrlProvider: MGLMapStyleUrlProvider
@@ -47,10 +48,15 @@ public final class MGLMapViewLifeCycleHandler: NSObject {
         super.init()
     }
 
-    public func setup(mapView: MGLMapView) {
+    /// This methods setups the `MGLMapViewLifeCycleHandler` with the given `MGLMapView`.
+    ///
+    /// - warning: This methods sets itself as delegate of the mapView and the mapThemeRepository. It expects that the delegates are not set from
+    ///     somewhere else.
+    public func setup(mapView: MGLMapView, delegate: MGLMapViewLifeCycleHandlerDelegate?) {
         self.mapView = mapView
-        mapView.delegate = self
-        mapView.addGestureRecognizer(mapTapGestureRecognizer)
+        self.mapView?.delegate = self
+        self.mapView?.addGestureRecognizer(mapTapGestureRecognizer)
+        self.delegate = delegate
 
         mapThemeRepository.delegate = self
     }
@@ -61,7 +67,7 @@ public final class MGLMapViewLifeCycleHandler: NSObject {
 extension MGLMapViewLifeCycleHandler {
     /// This methods pauses all layer updates.
     ///
-    /// - note: This shoud be called if the map is not visible.
+    /// - note: This shoud be called if the map is not visible to not update the map layers if the view is not visible.
     public func pauseLayerUpdates() {
         layerUpdatesPaused = true
     }
@@ -115,13 +121,20 @@ extension MGLMapViewLifeCycleHandler: MGLMapViewDelegate {
     public func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
         initNewMapLayersController(mapView)
         localize(style: style)
+
+        delegate?.mapView(mapView, didFinishLoading: style, handledBy: self)
     }
 
-    public func mapView(_ mapView: MGLMapView, regionDidChangeWith reason: MGLCameraChangeReason, animated _: Bool) {
-        guard reason == .gestureTilt else {
-            return
+    public func mapView(_ mapView: MGLMapView, regionIsChangingWith reason: MGLCameraChangeReason) {
+        delegate?.mapView(mapView, regionIsChangingWith: reason, handledBy: self)
+    }
+
+    public func mapView(_ mapView: MGLMapView, regionDidChangeWith reason: MGLCameraChangeReason, animated: Bool) {
+        if reason == .gestureTilt {
+            currentLayersController?.updateTilt(tilt: Float(mapView.camera.pitch))
         }
-        currentLayersController?.updateTilt(tilt: Float(mapView.camera.pitch))
+
+        delegate?.mapView(mapView, regionDidChangeWith: reason, animated: animated, handledBy: self)
     }
 }
 
