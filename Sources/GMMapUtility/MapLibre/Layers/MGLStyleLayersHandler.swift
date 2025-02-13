@@ -21,7 +21,7 @@ open class MGLStyleLayersHandler: MapLayerHandler {
         }
     }
 
-    private var tilt: Float = 0 {
+    public private(set) var tilt: Float = 0 {
         didSet {
             guard tilt != oldValue else {
                 return
